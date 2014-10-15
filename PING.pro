@@ -26,6 +26,7 @@ HEADERS  += MainWindow.hpp \
     PingChunk.hpp \
     PingImage.hpp \
     PingIHDR.hpp \
-    PingUtil.hpp
+    PingUtil.hpp \
+    main.hpp
 
 FORMS    += MainWindow.ui
