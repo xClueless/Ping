@@ -79,7 +79,7 @@ void PingChunk::printHeader() const
 	std::string publicStr = isPublic() ? "Yes" : "No";
 	std::string conformingStr = isConforming() ? "Yes" : "No";
 	std::string safeCopyStr = isSafelyCopyable() ? "Yes" : "No";
-	cout << "Critical :" << criticalStr << endl;
+	cout << "Critical: " << criticalStr << endl;
 	cout << "Public: " << publicStr << endl;
 	cout << "Conforming: " << conformingStr << endl;
 	cout << "Safely Copyable: " << safeCopyStr << endl;
