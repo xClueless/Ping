@@ -9,6 +9,15 @@
 
 using namespace std;
 
+enum FilterAlgorithms
+{
+	NO_FILTER = 0,
+	SUB_FILTER = 1,
+	UP_FILTER = 2,
+	AVERAGE_FILTER = 3,
+	PAETH_FILTER = 4
+};
+
 PingImageBuffer::PingImageBuffer()
 {
 }
@@ -27,6 +36,25 @@ void PingImageBuffer::readCompressedData(const vector<vector<char>*>& compressed
 	else
 	{
 		throw PingParseError("Cannot decompress image data is the compression method is not understood.");
+	}
+}
+
+void PingImageBuffer::reverseFilters()
+{
+	for(size_t currentRowIndex=0;currentRowIndex<mIHDR->height();++currentRowIndex)
+	{
+		uint8_t* currentRowPtr = getRowPointer(currentRowIndex);
+
+		uint8_t lineFilterAlgorithm = *currentRowPtr;
+
+		switch(lineFilterAlgorithm)
+		{
+			case NO_FILTER: cout << "[" << currentRowIndex  << "] NO_FILTER." << endl; break;
+			case SUB_FILTER: cout << "[" << currentRowIndex  << "] SUB_FILTER." << endl; break;
+			case UP_FILTER: cout << "[" << currentRowIndex  << "] UP_FILTER." << endl; break;
+			case AVERAGE_FILTER: cout << "[" << currentRowIndex  << "] AVERAGE_FILTER." << endl; break;
+			case PAETH_FILTER: cout << "[" << currentRowIndex  << "] PAETH_FILTER." << endl; break;
+		}
 	}
 }
 
@@ -49,9 +77,6 @@ QImage PingImageBuffer::buildQImage()
 		case GRAYSCALE: fmt = QImage::Format_Mono; break;
 		case INDEXED: fmt = QImage::Format_Indexed8; break;
 	}
-
-//	QImage img(ihdr->width(), ihdr->height(), fmt);
-
 
 	QImage img(&mDecompressedImageData[0], mIHDR->width(), mIHDR->height(), fmt);
 	return img;
@@ -82,6 +107,15 @@ void PingImageBuffer::zlibDeflate(const vector<vector<char>*>& compressedData)
 
 uint8_t* PingImageBuffer::getRowPointer(size_t pos)
 {
+	if(mIHDR == NULL)
+	{
+		throw PingParseError("Cannot retrieve row pointer without an IHDR");
+	}
+	else if(mDecompressedImageData.empty())
+	{
+		throw PingParseError("Cannot retrieve row pointer without decompressed image data.");
+	}
+
 	uint8_t* rowPtr = &mDecompressedImageData[0];
 	for(size_t i=0;i<pos;++i)
 	{

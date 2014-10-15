@@ -96,6 +96,7 @@ void PingImage::readImage()
 	}
 	mImageBuffer.setIHDR(mIHDR);
 	mImageBuffer.readCompressedData(mIDATData);
+	mImageBuffer.reverseFilters();
 }
 
 void PingImage::verifySignature()

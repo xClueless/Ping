@@ -17,6 +17,7 @@ public:
 	PingImageBuffer();
 	void setIHDR(const PingIHDR* ihdr);
 	void readCompressedData(const std::vector<std::vector<char>*>& compressedDataSets);
+	void reverseFilters();
 	QImage buildQImage();
 };
 
