@@ -62,6 +62,10 @@ void PingImage::readChunks()
 				}
 				mIHDR = new PingIHDR(chunk->data());
 			}
+			else if(chunk->name() == "IDAT")
+			{
+				mIDATData.push_back(&chunk->data());
+			}
 		}
 		else if(chunk->name() == "IEND")
 		{
@@ -78,6 +82,19 @@ void PingImage::readChunks()
 
 		advance(chunkStart, chunk->chunkLength());
 	}
+}
+
+void PingImage::readImage()
+{
+	if(mIHDR == NULL)
+	{
+		throw PingParseError("Cannot read the image without an IHDR chunk. Make sure you call readChunks first.");
+	}
+	if(mIDATData.empty())
+	{
+		throw PingParseError("Cannot read the image without any IDAT chunks. Make sure you call readChunks first.");
+	}
+	mImageBuffer.readCompressedData(mIDATData, mIHDR->compressionMethod());
 }
 
 void PingImage::verifySignature()
@@ -98,4 +115,9 @@ const std::vector<PingChunk*>&PingImage::chunks()
 PingIHDR* PingImage::ihdr()
 {
 	return mIHDR;
+}
+
+PingImageBuffer& PingImage::imageBuffer()
+{
+	return mImageBuffer;
 }

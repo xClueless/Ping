@@ -7,6 +7,8 @@
 QT       += core gui
 CONFIG += c++11
 
+CXXFLAGS += -Wall
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PING
@@ -19,7 +21,8 @@ SOURCES += main.cpp\
     PingImage.cpp \
     PingParseError.cpp \
     PingIHDR.cpp \
-    PingUtil.cpp
+    PingUtil.cpp \
+    PingImageBuffer.cpp
 
 HEADERS  += MainWindow.hpp \
     PingParseError.hpp \
@@ -27,6 +30,8 @@ HEADERS  += MainWindow.hpp \
     PingImage.hpp \
     PingIHDR.hpp \
     PingUtil.hpp \
-    main.hpp
+    main.hpp \
+    PingImageBuffer.hpp
 
 FORMS    += MainWindow.ui
+LIBS     += -lz -lboost_iostreams

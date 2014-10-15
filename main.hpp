@@ -9,6 +9,7 @@ struct options
 	bool printIHDR;
 	bool printHeaders;
 	bool printData;
+	bool displayImage;
 };
 
 options processArguments(int argc, char* argv[]);

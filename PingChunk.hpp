@@ -74,12 +74,16 @@ public:
 		mCRC = std::vector<char>(crcStart, chunkEnd);
 	}
 
-	int dataLength() const;
 	size_t dataOffset() const;
+
 	std::string name() const;
+
 	std::vector<char> CRC() const;
+
 	std::vector<char>& data();
 	const std::vector<char>& constData() const;
+	size_t dataLength() const;
+
 	size_t chunkLength() const;
 	bool isCritical() const;
 	bool isPublic() const;

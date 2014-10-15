@@ -13,7 +13,7 @@ PingChunk::~PingChunk()
 	cout << "~PingChunk() - Name: " << mName << endl;
 }
 
-int PingChunk::dataLength() const
+size_t PingChunk::dataLength() const
 {
 	return mDataLength;
 }
