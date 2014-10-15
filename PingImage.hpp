@@ -13,7 +13,8 @@ class PingImage
 private:
 	std::string mFilePath;
 	std::vector<char> mData;
-	std::vector<PingChunk> mChunks;
+	std::vector<PingChunk*> mChunks;
+	PingIHDR* mIHDR = NULL;
 public:
 	const static size_t PNG_HEADER_LENGTH = 8;
 	const static size_t MINIMUM_PNG_SIZE = PNG_HEADER_LENGTH + PingChunk::MINIMUM_CHUNK_LENGTH;
@@ -23,6 +24,9 @@ public:
 	void readFile();
 	void readChunks();
 	void verifySignature();
+
+	const std::vector<PingChunk*>& chunks();
+	PingIHDR* ihdr();
 };
 
 #endif // PINGIMAGE_HPP

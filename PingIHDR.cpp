@@ -6,7 +6,10 @@
 
 using namespace std;
 
-PingIHDR::PingIHDR(vector<char>& data) : mData(data) {}
+PingIHDR::PingIHDR(vector<char>& data) : mData(data)
+{
+
+}
 
 uint32_t PingIHDR::width() const
 {
@@ -111,12 +114,12 @@ string PingIHDR::interlaceMethodString() const
 
 void PingIHDR::print() const
 {
-	cout << "IHDR" << endl;
+	cout << endl << "IHDR" << endl;
 	cout << "===================================" << endl;
 	cout << "W/H: " << width() << "x" << height() << endl;
 	cout << "Bit Depth: " << static_cast<unsigned>(bitDepth()) << endl;
 	cout << "Colour Type: " << colourTypeString() << endl;
 	cout << "Compression Method: " << compressionMethodString() << endl;
 	cout << "Filter Method: " << filterMethodString() << endl;
-	cout << "Interlace Method: " << interlaceMethodString() << endl << endl;
+	cout << "Interlace Method: " << interlaceMethodString() << endl;
 }

@@ -21,6 +21,13 @@ int main(int argc, char *argv[])
 		png.readFile();
 		png.verifySignature();
 		png.readChunks();
+		png.ihdr()->print();
+
+		for(PingChunk* chunk : png.chunks())
+		{
+			chunk->printHeader();
+			chunk->printData();
+		}
 	}
 	catch (const PingParseError& pngPE)
 	{

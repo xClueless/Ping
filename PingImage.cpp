@@ -40,28 +40,43 @@ void PingImage::readChunks()
 
 	while(distance(chunkStart, mData.end()) >= PingChunk::MINIMUM_CHUNK_LENGTH)
 	{
-		mChunks.push_back(PingChunk());
-		PingChunk& chunk = mChunks.back();
+		mChunks.push_back(new PingChunk);
+		PingChunk* chunk = mChunks.back();
 
-		chunk.readHeaderLeft(chunkStart, chunkStart+PingChunk::MINIMUM_CHUNK_LENGTH);
+		chunk->readHeaderLeft(chunkStart, chunkStart+PingChunk::MINIMUM_CHUNK_LENGTH);
+		vector<char>::iterator chunkEnd = chunkStart + chunk->chunkLength();
 
-		vector<char>::iterator chunkEnd = chunkStart + chunk.chunkLength();
+		//We know where the CRC is now, might as well read it even if we don't understand the chunk data.
+		chunk->readCRC(chunkStart, chunkEnd);
 
-		if(chunk.name() == "IHDR" || chunk.name() == "IDAT")
+		//Read and use the chunk data if we understand the chunk type. There's no point in copying the data if we don't understand it.
+		if(chunk->name() == "IHDR" || chunk->name() == "IDAT")
 		{
-			chunk.readData(chunkStart, chunkEnd);
-			chunk.readCRC(chunkStart, chunkEnd);
+			chunk->readData(chunkStart, chunkEnd);
+
+			if(chunk->name() == "IHDR")
+			{
+				if(mIHDR != NULL)
+				{
+					throw PingParseError("Found a second IHDR chunk. Ignoring it.");
+				}
+				mIHDR = new PingIHDR(chunk->data());
+			}
 		}
-		else if(chunk.isCritical())
+		else if(chunk->name() == "IEND")
 		{
-			throw PingParseError("Cannot understand critical chunk '" + chunk.name() + "'");
+			break;
+		}
+		else if(chunk->isCritical())
+		{
+			throw PingParseError("Cannot understand critical chunk '" + chunk->name() + "'");
 		}
 		else
 		{
-			cout << "Ignoring non-critical meaningless chunk '" << chunk.name() << "'" << endl;
+			cout << "Ignoring non-critical meaningless chunk '" << chunk->name() << "'" << endl;
 		}
 
-		advance(chunkStart, chunk.chunkLength());
+		advance(chunkStart, chunk->chunkLength());
 	}
 }
 
@@ -73,4 +88,14 @@ void PingImage::verifySignature()
 	{
 		throw PingParseError("Invalid PNG header.");
 	}
+}
+
+const std::vector<PingChunk*>&PingImage::chunks()
+{
+	return mChunks;
+}
+
+PingIHDR* PingImage::ihdr()
+{
+	return mIHDR;
 }

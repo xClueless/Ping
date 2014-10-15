@@ -31,6 +31,7 @@ protected:
 	std::vector<char> mData;
 public:
 	PingChunk();
+	~PingChunk();
 
 	template<class It>
 	void readHeaderLeft(It chunkStart, It chunkMinimumEnd)

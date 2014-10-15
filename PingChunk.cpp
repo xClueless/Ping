@@ -8,6 +8,11 @@ PingChunk::PingChunk()
 
 }
 
+PingChunk::~PingChunk()
+{
+	cout << "~PingChunk() - Name: " << mName << endl;
+}
+
 int PingChunk::dataLength() const
 {
 	return mDataLength;
@@ -64,20 +69,26 @@ bool PingChunk::isSafelyCopyable() const
 
 void PingChunk::printHeader() const
 {
-	cout << "Length:" << mDataLength << " Type/Name:" << mName << endl;
-	cout << "CRC:" << read_png_uint32(&mCRC[0]) << endl;
+	cout << endl << "CHUNK" << endl;
+	cout << "===================================" << endl;
+	cout << "Length: " << mDataLength << endl;
+	cout << "Type/Name: " << mName << endl;
+	cout << "CRC: " << read_png_uint32(&mCRC[0]) << endl;
 
 	std::string criticalStr = isCritical() ? "Yes" : "No";
 	std::string publicStr = isPublic() ? "Yes" : "No";
 	std::string conformingStr = isConforming() ? "Yes" : "No";
 	std::string safeCopyStr = isSafelyCopyable() ? "Yes" : "No";
-	cout << "Critical:" << criticalStr << " Public:" << publicStr;
-	cout << " Conforming:" << conformingStr << "SafeCopy: " << safeCopyStr << endl;
+	cout << "Critical :" << criticalStr << endl;
+	cout << "Public: " << publicStr << endl;
+	cout << "Conforming: " << conformingStr << endl;
+	cout << "Safely Copyable: " << safeCopyStr << endl;
 }
 
 void PingChunk::printData() const
 {
-	cout << "DATA" << endl;
+	cout << endl << "DATA" << endl;
+	cout << "===================================" << endl;
 	for(char c : mData)
 	{
 		cout << c;
