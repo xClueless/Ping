@@ -94,7 +94,8 @@ void PingImage::readImage()
 	{
 		throw PingParseError("Cannot read the image without any IDAT chunks. Make sure you call readChunks first.");
 	}
-	mImageBuffer.readCompressedData(mIDATData, mIHDR->compressionMethod());
+	mImageBuffer.setIHDR(mIHDR);
+	mImageBuffer.readCompressedData(mIDATData);
 }
 
 void PingImage::verifySignature()

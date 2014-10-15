@@ -9,13 +9,15 @@
 class PingImageBuffer
 {
 private:
-	std::vector<unsigned char> mDecompressedImageData;
+	std::vector<uint8_t> mDecompressedImageData;
 	void zlibDeflate(const std::vector<std::vector<char>*>& compressedData);
-
+	uint8_t* getRowPointer(size_t pos);
+	const PingIHDR* mIHDR;
 public:
 	PingImageBuffer();
-	void readCompressedData(const std::vector<std::vector<char>*>& compressedDataSets, CompressionMethod cm);
-	QImage buildQImage(PingIHDR* ihdr);
+	void setIHDR(const PingIHDR* ihdr);
+	void readCompressedData(const std::vector<std::vector<char>*>& compressedDataSets);
+	QImage buildQImage();
 };
 
 #endif // PINGIMAGEBUFFER_HPP

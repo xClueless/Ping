@@ -18,6 +18,7 @@ private:
 	std::vector<std::vector<char>*> mIDATData;
 	PingIHDR* mIHDR = NULL;
 	PingImageBuffer mImageBuffer;
+
 public:
 	const static size_t PNG_HEADER_LENGTH = 8;
 	const static size_t MINIMUM_PNG_SIZE = PNG_HEADER_LENGTH + PingChunk::MINIMUM_CHUNK_LENGTH;

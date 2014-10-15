@@ -13,9 +13,14 @@ PingImageBuffer::PingImageBuffer()
 {
 }
 
-void PingImageBuffer::readCompressedData(const vector<vector<char>*>& compressedDataSets, CompressionMethod cm)
+void PingImageBuffer::setIHDR(const PingIHDR* ihdr)
 {
-	if(cm == DEFLATE)
+	mIHDR = ihdr;
+}
+
+void PingImageBuffer::readCompressedData(const vector<vector<char>*>& compressedDataSets)
+{
+	if(mIHDR->compressionMethod() == DEFLATE)
 	{
 		zlibDeflate(compressedDataSets);
 	}
@@ -25,10 +30,19 @@ void PingImageBuffer::readCompressedData(const vector<vector<char>*>& compressed
 	}
 }
 
-QImage PingImageBuffer::buildQImage(PingIHDR* ihdr)
+QImage PingImageBuffer::buildQImage()
 {
+	if(mIHDR == NULL)
+	{
+		throw PingParseError("Cannot build QImage without an IHDR");
+	}
+	else if(mDecompressedImageData.empty())
+	{
+		throw PingParseError("Cannot build QImage without decompressed image data.");
+	}
+
 	QImage::Format fmt = QImage::Format_ARGB32;
-	switch(ihdr->colourType())
+	switch(mIHDR->colourType())
 	{
 		case RGB: fmt = QImage::Format_RGB32; break;
 		case RGB_ALPHA: fmt = QImage::Format_ARGB32; break;
@@ -37,7 +51,9 @@ QImage PingImageBuffer::buildQImage(PingIHDR* ihdr)
 	}
 
 //	QImage img(ihdr->width(), ihdr->height(), fmt);
-	QImage img(&mDecompressedImageData[0], ihdr->width(), ihdr->height(), fmt);
+
+
+	QImage img(&mDecompressedImageData[0], mIHDR->width(), mIHDR->height(), fmt);
 	return img;
 }
 
@@ -62,4 +78,15 @@ void PingImageBuffer::zlibDeflate(const vector<vector<char>*>& compressedData)
 	}
 
 	cout << " Done" << endl;
+}
+
+uint8_t* PingImageBuffer::getRowPointer(size_t pos)
+{
+	uint8_t* rowPtr = &mDecompressedImageData[0];
+	for(size_t i=0;i<pos;++i)
+	{
+		rowPtr+=mIHDR->width();
+	}
+
+	return rowPtr;
 }
