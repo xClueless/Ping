@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
 
 	PingImage png("/run/media/dan/Seagate/Pictures/Graphics/Panda.png");
-//	PNGImage png("/home/dan/grub.cfg");
+//	PingImage png("/home/dan/grub.cfg");
 
 	try
 	{
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	}
 	catch (const PingParseError& pngPE)
 	{
-		cerr << pngPE.what();
+		cerr << pngPE.what() << endl;
 	}
 
 //	return a.exec();
